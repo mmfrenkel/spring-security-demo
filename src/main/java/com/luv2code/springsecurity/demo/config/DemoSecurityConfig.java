@@ -1,5 +1,8 @@
 package com.luv2code.springsecurity.demo.config;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,18 +15,16 @@ import org.springframework.security.core.userdetails.User.UserBuilder;
 @Configuration
 @EnableWebSecurity
 public class DemoSecurityConfig extends WebSecurityConfigurerAdapter{
+	
+    @Autowired
+    private DataSource securityDataSource;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		
-        // IN MEMORY AUTHENTICATION -- getting up and running
-        UserBuilder users = User.withDefaultPasswordEncoder();
-        
-        auth.inMemoryAuthentication()
-            .withUser(users.username("john").password("test123").roles("EMPLOYEE"))
-	        .withUser(users.username("mary").password("badpass").roles("MANAGER", "EMPLOYEE"))
-	        .withUser(users.username("sally").password("xertg34").roles("ADMIN", "EMPLOYEE"));
-    }
+        // Spring will handle reading the user/password/roles from db
+        auth.jdbcAuthentication().dataSource(securityDataSource);
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -35,10 +36,10 @@ public class DemoSecurityConfig extends WebSecurityConfigurerAdapter{
             .antMatchers("/leaders/**").hasRole("MANAGER")
             .antMatchers("/systems/**").hasRole("ADMIN")
             .and()
-            .formLogin()
-                .loginPage("/showLoginPage")
-                .loginProcessingUrl("/authenticateUser")
-                .permitAll() // allow anyone to see login page
+	            .formLogin()
+	                .loginPage("/showLoginPage")
+	                .loginProcessingUrl("/authenticateUser")
+	                .permitAll() // allow anyone to see login page
         	.and()
         		.logout()    // enable logout support
         		.permitAll()
