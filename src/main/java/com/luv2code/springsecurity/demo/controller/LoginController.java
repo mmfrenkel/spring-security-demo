@@ -11,4 +11,10 @@ public class LoginController {
 	public String showLoginPage() {
 		return "bootstrap-login";
 	}
+	
+	// adding request mapping for "/access-denied"
+	@GetMapping("/accessDenied")
+	public String showAccessDenied() {
+		return "access-denied";
+	}
 }

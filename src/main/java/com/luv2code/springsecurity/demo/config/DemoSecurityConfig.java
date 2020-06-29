@@ -21,8 +21,8 @@ public class DemoSecurityConfig extends WebSecurityConfigurerAdapter{
         
         auth.inMemoryAuthentication()
             .withUser(users.username("john").password("test123").roles("EMPLOYEE"))
-	        .withUser(users.username("mary").password("badpass").roles("MANAGER"))
-	        .withUser(users.username("sally").password("xertg34").roles("ADMINISTRATOR"));
+	        .withUser(users.username("mary").password("badpass").roles("MANAGER", "EMPLOYEE"))
+	        .withUser(users.username("sally").password("xertg34").roles("ADMIN", "EMPLOYEE"));
     }
 
 	@Override
@@ -31,7 +31,9 @@ public class DemoSecurityConfig extends WebSecurityConfigurerAdapter{
         // for any request, it must be authenticated, must be logged in
         // announce customization; set where to reference the form and where to send submission
         http.authorizeRequests()
-                .anyRequest().authenticated()
+            .antMatchers("/").hasRole("EMPLOYEE")
+            .antMatchers("/leaders/**").hasRole("MANAGER")
+            .antMatchers("/systems/**").hasRole("ADMIN")
             .and()
             .formLogin()
                 .loginPage("/showLoginPage")
@@ -39,7 +41,10 @@ public class DemoSecurityConfig extends WebSecurityConfigurerAdapter{
                 .permitAll() // allow anyone to see login page
         	.and()
         		.logout()    // enable logout support
-        		.permitAll();
+        		.permitAll()
+        	.and()
+        		.exceptionHandling()
+        		.accessDeniedPage("/accessDenied");
 	}
 	
 }

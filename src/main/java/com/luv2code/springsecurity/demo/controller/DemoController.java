@@ -10,5 +10,15 @@ public class DemoController {
 	public String showhome() {
 		return "home";  // corresponds to home.js page
 	}
+	
+	@GetMapping("/leaders")
+	public String leaderPage() {
+		return "leaders";
+	}
+	
+	@GetMapping("/systems")
+	public String systemsPage() {
+		return "systems";
+	}
 
 }
