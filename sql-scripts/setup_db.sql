@@ -10,20 +10,26 @@ USE `spring_security_demo`;
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
+  `password` char(68) NOT NULL,
   `enabled` tinyint(1) NOT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Inserting data for table `users`
+-- Dumping data for table `users`
+--
+-- NOTE: The passwords are encrypted using BCrypt
+--
+-- A generation tool is avail at: http://www.luv2code.com/generate-bcrypt-password
+--
+-- Default passwords here are: fun123
 --
 
 INSERT INTO `users` 
 VALUES 
-('john','{noop}test123',1),
-('mary','{noop}test123',1),
-('susan','{noop}test123',1);
+('john','{bcrypt}$2a$04$eFytJDGtjbThXa80FyOOBuFdK2IwjyWefYkMpiBEFlpBwDH.5PM0K',1),
+('mary','{bcrypt}$2a$04$eFytJDGtjbThXa80FyOOBuFdK2IwjyWefYkMpiBEFlpBwDH.5PM0K',1),
+('susan','{bcrypt}$2a$04$eFytJDGtjbThXa80FyOOBuFdK2IwjyWefYkMpiBEFlpBwDH.5PM0K',1);
 
 
 --
@@ -39,7 +45,7 @@ CREATE TABLE `authorities` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Inserting data for table `authorities`
+-- Dumping data for table `authorities`
 --
 
 INSERT INTO `authorities` 
@@ -49,5 +55,4 @@ VALUES
 ('mary','ROLE_MANAGER'),
 ('susan','ROLE_EMPLOYEE'),
 ('susan','ROLE_ADMIN');
-
 
